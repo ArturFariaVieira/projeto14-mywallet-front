@@ -33,7 +33,7 @@ export default function Footer() {
 const Caixafooter = Styled.div`
 height: 114px;
 width: 326 px;
-position: absolute;
+position: relative;
 margin-top: 10px;
 margin-left: 10px;
 padding: 10px;
@@ -48,7 +48,8 @@ height: 114px;
 width: 155px;
 display:flex;
 margin-right: 15px;
-position: relative;
+position: absolute;
+left: -160px;
 background-color: #A328D6;
 border-radius: 10px;
 h2  {
@@ -82,7 +83,7 @@ height: 114px;
 width: 155px;
 display:flex;
 margin-right: 15px;
-position: relative;
+position: absolute;
 border-radius: 10px;
 background-color: #A328D6;
 h2  {
