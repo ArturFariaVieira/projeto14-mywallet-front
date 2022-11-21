@@ -1,13 +1,10 @@
 import Styled from "styled-components";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import circleicon from "../assets/images/circleicon.svg"
 import plusicon from "..//assets/images/plusicon.svg"
 import minusicon from "../assets/images/minusicon.svg"
 
 export default function Footer() {
-    const Navigate = useNavigate;
     return (
         <Caixafooter>
             <Link to= "/newentry">
@@ -36,8 +33,8 @@ export default function Footer() {
 const Caixafooter = Styled.div`
 height: 114px;
 width: 326 px;
-position: fixed;
-bottom: 25px;
+position: absolute;
+margin-top: 10px;
 margin-left: 10px;
 padding: 10px;
 box-sizing: border-box;
@@ -60,7 +57,6 @@ h2  {
     position: absolute;
     top: 12px;
     left: 16px;
-    z-index: 2;
 }
 h1  {
     height: 22px;
@@ -95,7 +91,7 @@ h2  {
     position: absolute;
     top: 8px;
     left: 16px;
-    z-index: 2;
+    
 }
 h1  {
     height: 22px;
