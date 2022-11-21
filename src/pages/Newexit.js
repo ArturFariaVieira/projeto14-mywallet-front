@@ -1,5 +1,5 @@
 import Styled from "styled-components";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { userContext } from "../contexts/userContext"
 import axios from "axios";
 import { Constantes } from "../constants/constants"
@@ -7,32 +7,39 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 
-export default function Signin() {
+export default function Newexit() {
 
-    const { setName, setEmail, setSenha, email, senha, loading, setLoading, setToken } = useContext(userContext)
-    const { URLsignin } = Constantes;
+    const { token, loading, setLoading } = useContext(userContext)
+    const { URLnewexit } = Constantes;
+    const [ valor, setValor] = useState("")
+    const [ text, setText] = useState("")
     const Navigate = useNavigate();
 
 
 
-    function Fazerlogin(e) {
+    function novasaida(e) {
         e.preventDefault();
         setLoading(true);
         let body = {
-            email: email,
-            password: senha
+            value: valor,
+            text: text,
+            type: "S"
         };
-        let promise = axios.post(URLsignin, body);
+        let config = {
+            headers: {Authorization: `Bearer ${token}`}
+        }
+        let promise = axios.post(URLnewexit, body, config);
         promise.then((res) => {
-            setToken(res.data.token)
-            setName(res.data.name)
             setLoading(false)
+            alert("Saída adicionada com sucesso")
             Navigate("/balance");
         }).catch((err) => {
-            if(err.response.status == 401){
-                alert("Email ou senha inválidos!");
+            console.log(err.response.status)
+            if(err.response.status == 401 ){
+                alert("Você não está mais logado, favor fazer login");
                 setLoading(false)
             }
+            Navigate("/")
 
         })
 
@@ -42,41 +49,37 @@ export default function Signin() {
     return (
 
         <Pagina>
-            <Caixalogo>
-                <h1>MY WALLET</h1>
-            </Caixalogo>
+            <Header>
+                <h1>Nova Saída </h1>
+            </Header>
             <Caixaformulario>
-                <form onSubmit={Fazerlogin}>
-                    <label htmlFor="email" ></label>
+                <form onSubmit={novasaida}>
+                    <label htmlFor="valor" ></label>
                     <input
                         disabled={loading}
-                        id="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        type="email"
+                        id="valor"
+                        placeholder="Valor"
+                        value={valor}
+                        onChange={e => setValor(e.target.value)}
+                        type="number" min="0.00"  step="0.01"
                         required
                     />
-                    <label htmlFor="senha" ></label>
+                    <label htmlFor="text" ></label>
                     <input
                         disabled={loading}
-                        id="senha"
-                        placeholder="Senha"
-                        value={senha}
-                        onChange={e => setSenha(e.target.value)}
-                        type="password"
+                        id="text"
+                        placeholder="Descrição"
+                        value={text}
+                        onChange={e => setText(e.target.value)}
+                        type="text"
                         required
                     />
 
-                    <button type="submit" disabled={loading} >  Entrar </button>
+                    <button type="submit" disabled={loading} >  Salvar saída </button>
 
                 </form>
             </Caixaformulario>
-            <Link to="/sign-up">
-                <Caixalink>
-                    <h1> Primeira vez? Cadastre-se!</h1>
-                </Caixalink>
-            </Link>
+            
         </Pagina>
 
     )
@@ -88,28 +91,25 @@ width: 375px;
 display: flex;
 flex-direction: column;
 align-items: center;
-justify-content: center;
 background-color: #8C11BE;
 a{
     text-decoration: none;
     color: #52B6FF;
 }
 `;
-const Caixalogo = Styled.div`
-height: 50px;
-width: auto;
-margin-bottom: 30px;
+const Header = Styled.div`
+height: 70px;
+width: 326px;
 display: flex;
-flex-direction: column;
-justify-content: center;
+justify-content: space-between;
 align-items: center;
 
 h1 {
-    font-family: 'Saira Stencil One', cursive;
+    font-family: 'Raleway', sans-serif;
     font-style: normal;
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 50px;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 31px;
     color: #FFFFFF;
     
 }`;
@@ -117,6 +117,7 @@ h1 {
 const Caixaformulario = Styled.div`
 height: 170px;
 width: 375px;
+margin-top 50px;
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -160,23 +161,5 @@ form{
     
 }
 `;
-const Caixalink = Styled.div`
-height: 17px;
-width: 300px;
-display:flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-h1{
-    font-family: 'Raleway', sans-serif;
-    font-style: normal;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 18px;
-    color: #FFFFFF;
-    text-decoration: none;
-    
-}
 
-`;
 

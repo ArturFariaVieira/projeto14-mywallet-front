@@ -7,34 +7,38 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 
-export default function Signin() {
+export default function Signup() {
 
-    const { setName, setEmail, setSenha, email, senha, loading, setLoading, setToken } = useContext(userContext)
-    const { URLsignin } = Constantes;
+    const { confirm_password, setConfirm_password,  name, setName, setEmail, setSenha, email, senha, loading, setLoading, setToken } = useContext(userContext)
+    const { URLsignup } = Constantes;
     const Navigate = useNavigate();
 
 
 
-    function Fazerlogin(e) {
+    function doSignup(e) {
         e.preventDefault();
         setLoading(true);
         let body = {
+            name: name,
             email: email,
-            password: senha
+            password: senha,
+            password_confirmation: confirm_password
         };
-        let promise = axios.post(URLsignin, body);
+        let promise = axios.post(URLsignup, body);
         promise.then((res) => {
-            setToken(res.data.token)
-            setName(res.data.name)
             setLoading(false)
-            Navigate("/balance");
+            alert("Cadastro efetuado! Faça login.")
+            Navigate("/");
         }).catch((err) => {
-            if(err.response.status == 401){
-                alert("Email ou senha inválidos!");
-                setLoading(false)
+            console.log(err);
+            setLoading(false);
+            if(err.response.status == 409){
+                alert("Email já cadastrado! Fazer login ou usar cadastrar outro email")
             }
-
-        })
+            if(err.response.status == 422){
+                alert("Dados inválidos!")
+            }
+    })
 
     }
 
@@ -46,7 +50,17 @@ export default function Signin() {
                 <h1>MY WALLET</h1>
             </Caixalogo>
             <Caixaformulario>
-                <form onSubmit={Fazerlogin}>
+                <form onSubmit={doSignup}>
+                    <label htmlFor="name" ></label>
+                    <input
+                        disabled={loading}
+                        id="name"
+                        placeholder="Nome"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        type="text"
+                        required
+                    />
                     <label htmlFor="email" ></label>
                     <input
                         disabled={loading}
@@ -67,14 +81,24 @@ export default function Signin() {
                         type="password"
                         required
                     />
+                    <label htmlFor="confirm_password" ></label>
+                    <input
+                        disabled={loading}
+                        id="confirm_password"
+                        placeholder="Confirme a senha"
+                        value={confirm_password}
+                        onChange={e => setConfirm_password(e.target.value)}
+                        type="password"
+                        required
+                    />
 
-                    <button type="submit" disabled={loading} >  Entrar </button>
+                    <button type="submit" disabled={loading} >  Cadastrar </button>
 
                 </form>
             </Caixaformulario>
-            <Link to="/sign-up">
+            <Link to="/">
                 <Caixalink>
-                    <h1> Primeira vez? Cadastre-se!</h1>
+                    <h1> Já tem uma conta? Entre agora!</h1>
                 </Caixalink>
             </Link>
         </Pagina>
@@ -90,14 +114,17 @@ flex-direction: column;
 align-items: center;
 justify-content: center;
 background-color: #8C11BE;
+
 a{
     text-decoration: none;
     color: #52B6FF;
 }
 `;
+
 const Caixalogo = Styled.div`
 height: 50px;
 width: auto;
+margin-top: -60px;
 margin-bottom: 30px;
 display: flex;
 flex-direction: column;
@@ -115,7 +142,7 @@ h1 {
 }`;
 
 const Caixaformulario = Styled.div`
-height: 170px;
+height: auto;
 width: 375px;
 display: flex;
 flex-direction: column;
